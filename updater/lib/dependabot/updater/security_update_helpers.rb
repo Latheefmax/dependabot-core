@@ -180,6 +180,19 @@ module Dependabot
             "be installed is #{latest_allowed_version}"
         end
       end
+
+      sig { params(notice: Notice).void }
+      def send_package_manager_deprecation_notice(notice)
+        Dependabot::Logger.warn(notice.message)
+        service.record_update_job_warn(
+          warn_type: notice.type,
+          warn_message: notice.message
+        )
+        rescue StandardError => e
+          Dependabot.logger.error(
+            "Failed to send package manager deprecation notice warning: #{e.message}"
+          )
+      end
     end
 
     module PullRequestHelpers
