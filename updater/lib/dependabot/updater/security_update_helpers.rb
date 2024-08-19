@@ -216,6 +216,7 @@ module Dependabot
           Dependabot::Logger.warn(deprecation_notice.message)
           service.record_update_job_warn(
             warn_type: deprecation_notice.type,
+            warn_title: deprecation_notice.title,
             warn_message: deprecation_notice.message
           )
         end

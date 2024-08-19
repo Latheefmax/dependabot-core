@@ -9,12 +9,13 @@ module Dependabot
     extend T::Sig
 
     sig { returns(String) }
-    attr_reader :mode, :type, :package_manager_name, :message, :markdown
+    attr_reader :mode, :type, :package_manager_name, :title, :message, :markdown
 
     # Initializes a new Notice object.
     # @param mode [String] The mode of the notice (e.g., "WARN", "ERROR").
     # @param type [String] The type of the notice (e.g., "bundler_deprecated_warn").
     # @param package_manager_name [String] The name of the package manager (e.g., "bundler").
+    # @param title [String] The title of the notice.
     # @param message [String] The main message of the notice.
     # @param markdown [String] The markdown formatted message.
     sig do
@@ -22,14 +23,16 @@ module Dependabot
         mode: String,
         type: String,
         package_manager_name: String,
+        title: String,
         message: String,
         markdown: String
       ).void
     end
-    def initialize(mode:, type:, package_manager_name:, message: "", markdown: "")
+    def initialize(mode:, type:, package_manager_name:, title: "", message: "", markdown: "")
       @mode = mode
       @type = type
       @package_manager_name = package_manager_name
+      @title = title
       @message = message
       @markdown = markdown
     end
@@ -42,6 +45,7 @@ module Dependabot
         mode: @mode,
         type: @type,
         package_manager_name: @package_manager_name,
+        title: @title,
         message: @message,
         markdown: @markdown
       }
@@ -105,7 +109,8 @@ module Dependabot
         package_manager.supported_versions,
         package_manager.support_later_versions?
       )
-      notice_type = "#{package_manager.name}_deprecated_#{mode.downcase}"
+      notice_type = "#{package_manager.name}_deprecated_warn"
+      title = "Package manager deprecation notice"
       message = "Dependabot will stop supporting `#{package_manager.name} v#{package_manager.version}`!"
       ## Create a warning markdown message
       markdown = "> [!WARNING]\n"
@@ -122,6 +127,7 @@ module Dependabot
         mode: mode,
         type: notice_type,
         package_manager_name: package_manager.name,
+        title: title,
         message: message,
         markdown: markdown
       )
@@ -143,7 +149,8 @@ module Dependabot
         package_manager.supported_versions,
         package_manager.support_later_versions?
       )
-      notice_type = "#{package_manager.name}_unsupported_#{mode.downcase}"
+      notice_type = "#{package_manager.name}_unsupported_error"
+      title = "Package manager unsupported notice"
       message = "Dependabot no longer supports `#{package_manager.name} v#{package_manager.version}`!"
       ## Create an error markdown message
       markdown = "> [!IMPORTANT]\n"
@@ -160,6 +167,7 @@ module Dependabot
         mode: mode,
         type: notice_type,
         package_manager_name: package_manager.name,
+        title: title,
         message: message,
         markdown: markdown
       )

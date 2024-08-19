@@ -97,15 +97,17 @@ module Dependabot
       params(
         job_id: T.any(String, Integer),
         warn_type: T.any(String, Symbol),
-        warn_message: T.any(String, Symbol)
+        warn_title: String,
+        warn_message: String
       ).void
     end
-    def self.record_update_job_warn(job_id:, warn_type:, warn_message:)
+    def self.record_update_job_warn(job_id:, warn_type:, warn_title:, warn_message:)
       current_span = ::OpenTelemetry::Trace.current_span
 
       attributes = {
         Attributes::JOB_ID => job_id,
         Attributes::WARN_TYPE => warn_type,
+        Attributes::WARN_TITLE => warn_title,
         Attributes::WARN_MESSAGE => warn_message
       }
       current_span.add_event(warn_type, attributes: attributes)
