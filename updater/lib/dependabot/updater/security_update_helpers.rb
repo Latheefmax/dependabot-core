@@ -186,9 +186,6 @@ module Dependabot
       extend T::Sig
       extend T::Helpers
 
-      sig { returns(T.nilable(Dependabot::Notice)) }
-      attr_reader :deprecation_notice
-
       sig { returns(Dependabot::Service) }
       attr_reader :service
 
