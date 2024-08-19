@@ -180,24 +180,17 @@ module Dependabot
             "be installed is #{latest_allowed_version}"
         end
       end
-
-      sig { params(notice: Notice).void }
-      def send_package_manager_deprecation_notice(notice)
-        Dependabot::Logger.warn(notice.message)
-        service.record_update_job_warn(
-          warn_type: notice.type,
-          warn_message: notice.message
-        )
-        rescue StandardError => e
-          Dependabot.logger.error(
-            "Failed to send package manager deprecation notice warning: #{e.message}"
-          )
-      end
     end
 
     module PullRequestHelpers
       extend T::Sig
       extend T::Helpers
+
+      sig { returns(T.nilable(Dependabot::Notice)) }
+      attr_reader :deprecation_notice
+
+      sig { returns(Dependabot::Service) }
+      attr_reader :service
 
       abstract!
 
@@ -212,6 +205,33 @@ module Dependabot
           .void
       end
       def add_deprecation_notice(notices:, package_manager:)
+        deprecation_notice = create_deprecation_notice(package_manager)
+
+        return unless deprecation_notice
+
+        notices << deprecation_notice
+      end
+
+      sig { params(package_manager: T.nilable(PackageManagerBase)).void }
+      def send_deprecation_notice(package_manager)
+        deprecation_notice = create_deprecation_notice(package_manager)
+        if deprecation_notice
+          Dependabot::Logger.warn(deprecation_notice.message)
+          service.record_update_job_warn(
+            warn_type: deprecation_notice.type,
+            warn_message: deprecation_notice.message
+          )
+        end
+        rescue StandardError => e
+          Dependabot.logger.error(
+            "Failed to send package manager deprecation notice warning: #{e.message}"
+          )
+      end
+
+      private
+
+      sig { params(package_manager: T.nilable(PackageManagerBase)).returns(T.nilable(Dependabot::Notice)) }
+      def create_deprecation_notice(package_manager)
         return unless Dependabot::Experiments.enabled?(
           :add_deprecation_warn_to_pr_message
         )
@@ -219,13 +239,9 @@ module Dependabot
 
         return unless package_manager.is_a?(PackageManagerBase)
 
-        deprecation_notice = Notice.generate_pm_deprecation_notice(
+        Notice.generate_pm_deprecation_notice(
           package_manager
         )
-
-        return unless deprecation_notice
-
-        notices << deprecation_notice
       end
     end
   end
