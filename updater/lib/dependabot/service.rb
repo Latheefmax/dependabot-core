@@ -88,15 +88,13 @@ module Dependabot
     sig do
       params(
         warn_type: T.any(String, Symbol),
-        warn_title: T.any(String, Symbol),
         warn_message: T.any(String, Symbol)
       ).void
     end
-    def record_update_job_warn(warn_type:, warn_title:, warn_message:)
-      warns << [warn_type.to_s, warn_title, warn_message]
+    def record_update_job_warn(warn_type:, warn_message:)
+      warns << [warn_type.to_s, warn_message]
       client.record_update_job_warn(
         warn_type: warn_type,
-        warn_title: warn_title,
         warn_message: warn_message
       )
     end

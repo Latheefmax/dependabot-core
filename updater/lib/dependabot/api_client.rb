@@ -129,23 +129,20 @@ module Dependabot
     sig do
       params(
         warn_type: T.any(String, Symbol),
-        warn_title: T.any(String, Symbol),
         warn_message: T.any(String, Symbol)
       ).void
     end
-    def record_update_job_warn(warn_type:, warn_title:, warn_message:)
+    def record_update_job_warn(warn_type:, warn_message:)
       ::Dependabot::OpenTelemetry.tracer.in_span("record_update_job_message", kind: :internal) do |_span|
         ::Dependabot::OpenTelemetry.record_update_job_warn(
           job_id: job_id,
           warn_type: warn_type,
-          warn_title: warn_title,
           warn_message: warn_message
         )
         api_url = "#{base_url}/update_jobs/#{job_id}/record_update_job_warn"
         body = {
           data: {
             "warn-type": warn_type,
-            "warn-title": warn_title,
             "warn-message": warn_message
           }
         }
