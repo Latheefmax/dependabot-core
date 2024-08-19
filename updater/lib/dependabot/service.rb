@@ -92,7 +92,7 @@ module Dependabot
         warn_message: T.any(String, Symbol)
       ).void
     end
-    def record_update_job_message(warn_type:, warn_title:, warn_message:)
+    def record_update_job_warn(warn_type:, warn_title:, warn_message:)
       warns << [warn_type.to_s, warn_title, warn_message]
       client.record_update_job_warn(
         warn_type: warn_type,
