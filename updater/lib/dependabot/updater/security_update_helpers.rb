@@ -213,7 +213,7 @@ module Dependabot
       def send_deprecation_notice(package_manager)
         deprecation_notice = create_deprecation_notice(package_manager)
         if deprecation_notice
-          Dependabot::Logger.warn(deprecation_notice.message)
+          Dependabot.logger.warn(deprecation_notice.message)
           service.record_update_job_warn(
             warn_type: deprecation_notice.type,
             warn_title: deprecation_notice.title,
