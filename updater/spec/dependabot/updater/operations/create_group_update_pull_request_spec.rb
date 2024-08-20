@@ -122,6 +122,7 @@ RSpec.describe Dependabot::Updater::Operations::CreateGroupUpdatePullRequest do
           mode: "WARN",
           type: "bundler_deprecated_warn",
           package_manager_name: "bundler",
+          title: "Package manager deprecation notice",
           message: "Dependabot will stop supporting `bundler v1`!\n" \
                    "Please upgrade to one of the following versions: `v2`, or `v3`.\n",
           markdown: "> [!WARNING]\n> Dependabot will stop supporting `bundler v1`!\n>\n" \
@@ -162,6 +163,7 @@ RSpec.describe Dependabot::Updater::Operations::CreateGroupUpdatePullRequest do
               mode: "WARN",
               type: "bundler_deprecated_warn",
               package_manager_name: "bundler",
+              title: "Package manager deprecation notice",
               message: "Dependabot will stop supporting `bundler v1`!\n" \
                        "Please upgrade to one of the following versions: `v2`, or `v3`.\n",
               markdown: "> [!WARNING]\n> Dependabot will stop supporting `bundler v1`!\n>\n" \

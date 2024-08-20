@@ -206,13 +206,11 @@ RSpec.describe Dependabot::Updater::Operations::RefreshSecurityUpdatePullRequest
             mode: "WARN",
             type: "bundler_deprecated_warn",
             package_manager_name: "bundler",
-            details: {
-              message: "Dependabot will stop supporting `bundler v1`!\n" \
-                       "Please upgrade to one of the following versions: `v2`, or `v3`.\n",
-              current_version: "v1",
-              markdown: "> [!WARNING]\n> Dependabot will stop supporting `bundler v1`!\n>\n" \
-                        "> Please upgrade to one of the following versions: `v2`, or `v3`.\n>\n"
-            }
+            title: "Package manager deprecation notice",
+            message: "Dependabot will stop supporting `bundler v1`!\n" \
+                     "Please upgrade to one of the following versions: `v2`, or `v3`.\n",
+            markdown: "> [!WARNING]\n> Dependabot will stop supporting `bundler v1`!\n>\n" \
+                      "> Please upgrade to one of the following versions: `v2`, or `v3`.\n>\n"
           }])
           expect(refresh_security_update_pull_request).to receive(:create_pull_request)
           refresh_security_update_pull_request.send(:check_and_update_pull_request, [dependency])
